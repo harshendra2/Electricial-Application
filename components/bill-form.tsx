@@ -199,48 +199,45 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
   const handleDownloadPDF = () => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
+    // ⚡️ SVG for the logo based on the uploaded image.
+    // Colors approximated from the image: Lightning bolt is light orange/peach, 'B' is light gray.
+    const logoSVG = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" style="height: 50px; display: block; margin: 0 auto 10px;">
+        <path d="M72.3 0L0 50l30.3 0L0 100l72.3-50L42 50l30.3-50z" fill="#FFB76B" style="transform: scale(0.6) translate(50px, 30px);"/>
+    </svg>
+`;
 
-    const total = getTotalAmount();
 
     const html = `
-      <!DOCTYPE html>
-      <html>
+        <!DOCTYPE html>
+        <html>
         <head>
           <title>Bill - ${bill?.bill_number || 'New Bill'}</title>
           <style>
             body {
-             /* Important property to force background graphics printing */
-    -webkit-print-color-adjust: exact; /* Chrome, Safari */
-    print-color-adjust: exact; /* Standard property */
-    
-    /* Re-apply background for printing with !important to override defaults */
-    background-image: url("/images/loghiter bakcground.png") !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
-    background-position: center !important;
-    
-    /* Optional: Adjust padding for print */
-    padding: 20px;
+              font-family: Arial, sans-serif;
+              padding: 20px;
+              color: #1e293b;
             }
-            /* Add this block to force background printing */
-            @media print {
-              body {
-                /* Important property to force background graphics printing */
-                -webkit-print-color-adjust: exact; /* Chrome, Safari */
-                print-color-adjust: exact; /* Standard property */
-                
-                /* Re-apply background for printing */
-                background-image: url("/images/loghiter bakcground.png") !important;
-                background-repeat: no-repeat !important;
-                background-size: cover !important;
-                background-position: center !important;
-                
-                /* Optional: Adjust padding for print */
-                padding: 20px; 
-              }
-            }
-            /* End of background printing fix */
+            /* Removed all background-image CSS that was causing the issue */
             
+            .logo-section {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .logo-text-main {
+                margin: 0;
+                color: #64748b; /* Gray color from the image text */
+                font-size: 24px;
+                font-weight: 600;
+            }
+            .logo-text-sub {
+                margin: 5px 0 0;
+                color: #94a3b8; /* Lighter gray */
+                font-size: 16px;
+                font-weight: 500;
+            }
+
             .header {
               text-align: center;
               margin-bottom: 30px;
@@ -325,21 +322,20 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
               border-top: 1px solid #e2e8f0;
               padding-top: 20px;
             }
-            
-            /* Remove the unnecessary media print block you had previously */
-            /* @media print {
-              body {
-                padding: 20px;
-              }
-            } */
           </style>
         </head>
         <body>
-          <div class="header">
-            <h1>ELECTRICAL & PIPELINE SERVICES</h1>
-            <p>Professional Billing Invoice</p>
+          <div class="logo-section">
+            ${logoSVG}
+            <p class="logo-text-main">Bhagavathi Electrical</p>
+            <p class="logo-text-sub">PROFESSIONAL WORKS</p>
           </div>
-
+<div class="header">
+    <p>Professional Billing Invoice</p>
+    <p style="margin-top: 10px; color: #475569; font-weight: 500;">
+        Proprietor: Tharanath | Contact: 94971 67366, 62380 72603
+    </p>
+    </div>
           <div class="info-section">
             <div class="info-box">
               <h3>Bill To:</h3>
@@ -395,8 +391,8 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
             <p>This is a computer-generated invoice.</p>
           </div>
         </body>
-      </html>
-    `;
+        </html>
+      `;
 
     printWindow.document.write(html);
     printWindow.document.close();
@@ -404,7 +400,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
     setTimeout(() => {
       printWindow.print();
     }, 250);
-  };
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100"
