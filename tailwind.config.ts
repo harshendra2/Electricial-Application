@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 
+
 const config: Config = {
   darkMode: ['class'],
   content: [
@@ -13,6 +14,7 @@ const config: Config = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+         'bhagavathi-light': "url('/bhagavathi-bg-light.png')",
       },
       borderRadius: {
         lg: 'var(--radius)',

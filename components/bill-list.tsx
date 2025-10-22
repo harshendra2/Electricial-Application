@@ -25,23 +25,15 @@ interface BillListProps {
 
 export default function BillList({ bills, onEdit, onDelete }: BillListProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 border-orange-200 focus:ring-orange-400">
       {bills.map((bill) => (
-        <Card key={bill.id} className="p-6 hover:shadow-lg transition-shadow">
+        <Card key={bill.id} className="p-6 hover:shadow-lg transition-shadow border-orange-200 focus:ring-orange-400">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="font-bold text-lg text-slate-900">{bill.bill_number}</h3>
               <p className="text-sm text-slate-500 flex items-center gap-1 mt-1">
                 <Calendar className="h-3 w-3" />
                 {format(new Date(bill.bill_date), 'MMM dd, yyyy')}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold text-blue-600">
-                ₹{Number(bill.total_amount).toLocaleString('en-IN', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
               </p>
             </div>
           </div>
@@ -69,7 +61,7 @@ export default function BillList({ bills, onEdit, onDelete }: BillListProps) {
             <Button
               variant="outline"
               size="sm"
-              className="flex-1"
+              className="flex-1 border-orange-200 focus:ring-orange-400"
               onClick={() => onEdit(bill)}
             >
               <Eye className="h-4 w-4 mr-1" />
@@ -78,13 +70,14 @@ export default function BillList({ bills, onEdit, onDelete }: BillListProps) {
             <Button
               variant="outline"
               size="sm"
+              className='border-orange-200 focus:ring-orange-400'
               onClick={() => onEdit(bill)}
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="h-4 w-4 border-orange-200 focus:ring-orange-400" />
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 ">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
@@ -99,7 +92,7 @@ export default function BillList({ bills, onEdit, onDelete }: BillListProps) {
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => onDelete(bill.id)}
-                    className="bg-red-600 hover:bg-red-700"
+                    className="bg-red-600 hover:bg-red-700 border-orange-200 focus:ring-orange-400"
                   >
                     Delete
                   </AlertDialogAction>

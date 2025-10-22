@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Plus, Trash2, Download, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import loghiter from "../public/images/loghiter bakcground.png"
 
 interface BillFormProps {
   bill: Bill | null;
@@ -208,11 +209,38 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
           <title>Bill - ${bill?.bill_number || 'New Bill'}</title>
           <style>
             body {
-              font-family: Arial, sans-serif;
-              padding: 40px;
-              max-width: 800px;
-              margin: 0 auto;
+             /* Important property to force background graphics printing */
+    -webkit-print-color-adjust: exact; /* Chrome, Safari */
+    print-color-adjust: exact; /* Standard property */
+    
+    /* Re-apply background for printing with !important to override defaults */
+    background-image: url("/images/loghiter bakcground.png") !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center !important;
+    
+    /* Optional: Adjust padding for print */
+    padding: 20px;
             }
+            /* Add this block to force background printing */
+            @media print {
+              body {
+                /* Important property to force background graphics printing */
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                print-color-adjust: exact; /* Standard property */
+                
+                /* Re-apply background for printing */
+                background-image: url("/images/loghiter bakcground.png") !important;
+                background-repeat: no-repeat !important;
+                background-size: cover !important;
+                background-position: center !important;
+                
+                /* Optional: Adjust padding for print */
+                padding: 20px; 
+              }
+            }
+            /* End of background printing fix */
+            
             .header {
               text-align: center;
               margin-bottom: 30px;
@@ -297,11 +325,13 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
               border-top: 1px solid #e2e8f0;
               padding-top: 20px;
             }
-            @media print {
+            
+            /* Remove the unnecessary media print block you had previously */
+            /* @media print {
               body {
                 padding: 20px;
               }
-            }
+            } */
           </style>
         </head>
         <body>
@@ -331,8 +361,6 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                 <th style="width: 40%;">Description</th>
                 <th style="width: 15%;" class="text-right">Quantity</th>
                 <th style="width: 10%;">Unit</th>
-                <th style="width: 15%;" class="text-right">Rate</th>
-                <th style="width: 15%;" class="text-right">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -344,21 +372,12 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                   <td>${item.description}</td>
                   <td class="text-right">${item.quantity}</td>
                   <td>${item.unit}</td>
-                  <td class="text-right">₹${Number(item.rate).toFixed(2)}</td>
-                  <td class="text-right">₹${Number(item.amount).toFixed(2)}</td>
                 </tr>
               `
                 )
                 .join('')}
             </tbody>
           </table>
-
-          <div class="total-section">
-            <p><strong>Total Amount:</strong> <span class="total">₹${total.toLocaleString('en-IN', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}</span></p>
-          </div>
 
           ${
             notes
@@ -388,7 +407,13 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100"
+    
+        style={{
+          backgroundImage: "url('/images/background.png')",
+          backgroundBlendMode: 'lighten',
+        }}
+    >
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onClose}>
@@ -409,7 +434,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
           </div>
         </div>
 
-        <Card>
+        <Card className='shadow-lg border border-orange-100 bg-white/90 backdrop-blur-md'>
           <CardHeader>
             <CardTitle>{bill ? `Edit Bill - ${bill.bill_number}` : 'Create New Bill'}</CardTitle>
           </CardHeader>
@@ -419,6 +444,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                 <Label htmlFor="clientName">Client Name *</Label>
                 <Input
                   id="clientName"
+                   className="pl-10 border-orange-200 focus:ring-orange-400"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   placeholder="Enter client name"
@@ -430,6 +456,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                   id="billDate"
                   type="date"
                   value={billDate}
+                   className="pl-10 border-orange-200 focus:ring-orange-400"
                   onChange={(e) => setBillDate(e.target.value)}
                 />
               </div>
@@ -439,6 +466,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                   id="clientPhone"
                   value={clientPhone}
                   onChange={(e) => setClientPhone(e.target.value)}
+                   className="pl-10 border-orange-200 focus:ring-orange-400"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -448,6 +476,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                   id="clientAddress"
                   value={clientAddress}
                   onChange={(e) => setClientAddress(e.target.value)}
+                   className="pl-10 border-orange-200 focus:ring-orange-400"
                   placeholder="Enter address"
                 />
               </div>
@@ -456,7 +485,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
             <div className="border-t pt-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Bill Items</h3>
-                <Button onClick={addItem} size="sm" variant="outline">
+                <Button onClick={addItem} size="sm" variant="outline"  className="pl-10 border-orange-200 focus:ring-orange-400">
                   <Plus className="mr-2 h-4 w-4" />
                   Add Item
                 </Button>
@@ -472,6 +501,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
                           placeholder="e.g., Wiring Installation"
+                          className="pl-10 border-orange-200 focus:ring-orange-400"
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -482,6 +512,7 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                           onChange={(e) => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)}
                           min="0"
                           step="0.01"
+                           className="pl-10 border-orange-200 focus:ring-orange-400"
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -490,29 +521,18 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                           value={item.unit}
                           onChange={(e) => updateItem(index, 'unit', e.target.value)}
                           placeholder="pcs, m, hrs"
+                           className="pl-10 border-orange-200 focus:ring-orange-400"
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <Label>Rate (₹)</Label>
-                        <Input
-                          type="number"
-                          value={item.rate}
-                          onChange={(e) => updateItem(index, 'rate', parseFloat(e.target.value) || 0)}
-                          min="0"
-                          step="0.01"
-                        />
-                      </div>
+                     
                       <div className="md:col-span-2 flex items-end gap-2">
-                        <div className="flex-1">
-                          <Label>Amount (₹)</Label>
-                          <Input value={item.amount.toFixed(2)} readOnly className="bg-slate-50" />
-                        </div>
+                        
                         {items.length > 1 && (
                           <Button
                             variant="outline"
                             size="icon"
                             onClick={() => removeItem(index)}
-                            className="text-red-600 hover:text-red-700"
+                            className="text-red-600 hover:text-red-700 border-orange-200 focus:ring-orange-400"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -521,20 +541,6 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
                     </div>
                   </Card>
                 ))}
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <Card className="p-4 bg-blue-50 border-blue-200">
-                  <div className="text-right">
-                    <p className="text-sm text-slate-600 mb-1">Total Amount</p>
-                    <p className="text-3xl font-bold text-blue-600">
-                      ₹{getTotalAmount().toLocaleString('en-IN', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </p>
-                  </div>
-                </Card>
               </div>
             </div>
 
