@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Plus, Trash2, Download, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import loghiter from "../public/images/loghiter bakcground.png"
+import { v4 as uuidv4 } from 'uuid';
 
 interface BillFormProps {
   bill: Bill | null;
@@ -185,16 +186,57 @@ export default function BillForm({ bill, onClose }: BillFormProps) {
     }
   };
 
-  const generateBillNumber = async () => {
-    const { data, error } = await supabase.rpc('generate_bill_number');
+  // const generateBillNumber = async () => {
+  //   const { data, error } = await supabase.rpc('generate_bill_number');
 
-    if (error || !data) {
-      const timestamp = Date.now();
-      return `BILL-${new Date().getFullYear()}-${timestamp}`;
+  //   if (error || !data) {
+  //     const timestamp = Date.now();
+  //     return `BILL-${new Date().getFullYear()}-${timestamp}`;
+  //   }
+
+  //   return data;
+  // };
+
+
+const generateBillNumber = async () => {
+  // Try to get a unique bill number using the RPC function
+  let billNumber = null;
+  let attempts = 0;
+  const maxAttempts = 5;
+
+  while (!billNumber && attempts < maxAttempts) {
+    attempts++;
+    
+    try {
+      // Generate a unique ID using timestamp + random
+      const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      billNumber = `BILLS-${new Date().getFullYear()}-${uniqueId.toUpperCase()}`;
+
+      // Check if this bill number already exists
+      const { data: existingBill } = await supabase
+        .from('bills')
+        .select('id')
+        .eq('bill_number', billNumber)
+        .single();
+
+      // If it doesn't exist, we're good
+      if (!existingBill) {
+        return billNumber;
+      }
+      
+      // If it exists, wait a bit and try again
+      await new Promise(resolve => setTimeout(resolve, 10));
+    } catch (error) {
+      console.error('Error generating bill number:', error);
     }
+  }
 
-    return data;
-  };
+  // Final fallback - this should be truly unique
+  const finalUniqueId = uuidv4();
+  return `BILLS-${new Date().getFullYear()}-${finalUniqueId.toUpperCase().replace(/-/g, '')}`;
+};
+
+
 
   const handleDownloadPDF = () => {
     const printWindow = window.open('', '_blank');

@@ -44,7 +44,7 @@
 -- Create bills table
 CREATE TABLE IF NOT EXISTS bills (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  bill_number text UNIQUE NOT NULL,
+  bill_number text NOT NULL,
   client_name text NOT NULL,
   client_phone text DEFAULT '',
   client_address text DEFAULT '',
@@ -120,17 +120,37 @@ CREATE POLICY "Allow public delete access to bill_items"
   USING (true);
 
 -- Function to auto-generate bill numbers
+-- CREATE OR REPLACE FUNCTION generate_bill_number()
+-- RETURNS text AS $$
+-- DECLARE
+--   next_number integer;
+--   bill_num text;
+-- BEGIN
+--   SELECT COUNT(*) + 1 INTO next_number FROM bills;
+--   bill_num := 'BILL-' || TO_CHAR(CURRENT_DATE, 'YYYY') || '-' || LPAD(next_number::text, 4, '0');
+--   RETURN bill_num;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
+
+
+
+-- Create a sequence
+CREATE SEQUENCE IF NOT EXISTS bill_number_seq START 1;
+
+-- Update the function
 CREATE OR REPLACE FUNCTION generate_bill_number()
 RETURNS text AS $$
 DECLARE
   next_number integer;
   bill_num text;
 BEGIN
-  SELECT COUNT(*) + 1 INTO next_number FROM bills;
-  bill_num := 'BILL-' || TO_CHAR(CURRENT_DATE, 'YYYY') || '-' || LPAD(next_number::text, 4, '0');
+  SELECT nextval('bill_number_seq') INTO next_number;
+  bill_num := 'BILLS-' || TO_CHAR(CURRENT_DATE, 'YYYY') || '-' || LPAD(next_number::text, 4, '0');
   RETURN bill_num;
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- Function to update bill total
 CREATE OR REPLACE FUNCTION update_bill_total()
